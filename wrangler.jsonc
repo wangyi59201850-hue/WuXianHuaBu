@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "wuxianhuabu15",
+  "name": "wuxianhuabu001",
   "main": ".open-next/worker.js",
   "compatibility_date": "2026-05-21",
   "compatibility_flags": ["nodejs_compat"],
