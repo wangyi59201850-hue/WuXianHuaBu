@@ -7,14 +7,19 @@
     "dev": "node --max-old-space-size=8192 node_modules/next/dist/bin/next dev --webpack",
     "dev:turbo": "node --max-old-space-size=8192 node_modules/next/dist/bin/next dev",
     "build": "next build",
+    "cf:build": "opennextjs-cloudflare build",
     "start": "next start",
+    "preview": "npm run cf:build && opennextjs-cloudflare preview",
+    "deploy": "npm run cf:build && opennextjs-cloudflare deploy",
+    "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
     "serve": "npm run build && next start",
     "lint": "eslint",
     "web": "npm run dev"
   },
   "dependencies": {
+    "@opennextjs/cloudflare": "^1.8.1",
     "lucide-react": "^1.7.0",
-    "next": "16.2.2",
+    "next": "16.2.6",
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "reactflow": "^11.11.4"
@@ -25,8 +30,9 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "16.2.2",
+    "eslint-config-next": "16.2.6",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "wrangler": "^4.18.0"
   }
 }
