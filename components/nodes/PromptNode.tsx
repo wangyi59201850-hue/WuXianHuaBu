@@ -70,7 +70,10 @@ import {
   normalizeExternalImageApiProviderId,
   type ExternalImageApiProviderId,
 } from "@/lib/externalImageApiShared";
-import { useLocalBridgeMediaUrl } from "@/lib/localBridgeMedia";
+import {
+  isLocalBridgeMediaUrl,
+  useLocalBridgeMediaUrl,
+} from "@/lib/localBridgeMedia";
 
 function mediaExtFromUrl(url: string) {
   const t = url.trim();
@@ -163,7 +166,9 @@ function PromptResultMedia({
     () => withGeneratedMediaCacheBust(src, cacheBustKey),
     [src, cacheBustKey]
   );
-  const displaySrc = useLocalBridgeMediaUrl(rawDisplaySrc) || rawDisplaySrc;
+  const bridgeDisplaySrc = useLocalBridgeMediaUrl(rawDisplaySrc);
+  const displaySrc =
+    bridgeDisplaySrc || (isLocalBridgeMediaUrl(rawDisplaySrc) ? "" : rawDisplaySrc);
   useEffect(() => {
     // src 閺囧瓨鏌婇崥搴ㄥ櫢缂冾喖娲栭柅鈧悩鑸碘偓渚婄窗闁灝鍘ら弮褌绔村▎鈥冲鏉炶棄銇戠拹銉﹀Ω閸氬海鐢荤憴鍡涱暥娑撯偓閻╁瓨瀵?<img> 濞撳弶鐓?    setUseImg(false);
   }, [displaySrc]);
@@ -767,7 +772,9 @@ function ConnectedImageThumb({
     () => withGeneratedMediaCacheBust(url, cacheBustKey),
     [url, cacheBustKey]
   );
-  const displayUrl = useLocalBridgeMediaUrl(rawDisplayUrl) || rawDisplayUrl;
+  const bridgeDisplayUrl = useLocalBridgeMediaUrl(rawDisplayUrl);
+  const displayUrl =
+    bridgeDisplayUrl || (isLocalBridgeMediaUrl(rawDisplayUrl) ? "" : rawDisplayUrl);
   useEffect(() => {
     setFailed(false);
   }, [displayUrl]);

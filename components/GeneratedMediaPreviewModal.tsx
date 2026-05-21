@@ -3,7 +3,10 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import { X } from "lucide-react";
-import { useLocalBridgeMediaUrl } from "@/lib/localBridgeMedia";
+import {
+  isLocalBridgeMediaUrl,
+  useLocalBridgeMediaUrl,
+} from "@/lib/localBridgeMedia";
 
 type MediaKind = "image" | "video";
 
@@ -173,7 +176,9 @@ export function GeneratedMediaPreviewModal({
   onClose: () => void;
   children: React.ReactNode;
 }) {
-  const resolvedMediaUrl = useLocalBridgeMediaUrl(mediaUrl) || mediaUrl;
+  const bridgeMediaUrl = useLocalBridgeMediaUrl(mediaUrl);
+  const resolvedMediaUrl =
+    bridgeMediaUrl || (isLocalBridgeMediaUrl(mediaUrl) ? "" : mediaUrl);
   const [portalReady, setPortalReady] = useState(false);
   const [facts, setFacts] = useState<MediaFacts>({
     width: null,

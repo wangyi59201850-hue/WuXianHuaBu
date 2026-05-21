@@ -43,7 +43,11 @@ export function useLocalBridgeMediaUrl(rawUrl: string | null | undefined) {
     () => (typeof rawUrl === "string" && rawUrl.trim() ? rawUrl.trim() : null),
     [rawUrl]
   );
-  const [displayUrl, setDisplayUrl] = useState<string | null>(normalized);
+  const [displayUrl, setDisplayUrl] = useState<string | null>(() => {
+    if (!normalized) return null;
+    if (!isLocalBridgeMediaUrl(normalized)) return normalized;
+    return resolvedBridgeMediaCache.get(normalized) ?? null;
+  });
 
   useEffect(() => {
     if (!normalized) {
@@ -60,13 +64,12 @@ export function useLocalBridgeMediaUrl(rawUrl: string | null | undefined) {
       return;
     }
     let cancelled = false;
-    setDisplayUrl(normalized);
     void fetchBridgeMediaAsObjectUrl(normalized)
       .then((objectUrl) => {
         if (!cancelled) setDisplayUrl(objectUrl);
       })
       .catch(() => {
-        if (!cancelled) setDisplayUrl(normalized);
+        if (!cancelled) setDisplayUrl(null);
       });
     return () => {
       cancelled = true;

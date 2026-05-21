@@ -2,7 +2,10 @@
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Maximize2, Minimize2, Pause, Play, Volume2, VolumeX } from "lucide-react";
-import { useLocalBridgeMediaUrl } from "@/lib/localBridgeMedia";
+import {
+  isLocalBridgeMediaUrl,
+  useLocalBridgeMediaUrl,
+} from "@/lib/localBridgeMedia";
 
 function formatTime(sec: number) {
   if (!Number.isFinite(sec) || sec < 0) return "0:00";
@@ -57,7 +60,9 @@ export function CanvasMaterialVideo({
   toolbarExpandExpanded = false,
   onToolbarExpandToggle,
 }: Props) {
-  const resolvedSrc = useLocalBridgeMediaUrl(src) || src;
+  const bridgeResolvedSrc = useLocalBridgeMediaUrl(src);
+  const resolvedSrc =
+    bridgeResolvedSrc || (isLocalBridgeMediaUrl(src) ? "" : src);
   const videoRefA = useRef<HTMLVideoElement | null>(null);
   const videoRefB = useRef<HTMLVideoElement | null>(null);
   const trackRef = useRef<HTMLDivElement>(null);

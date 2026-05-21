@@ -3,7 +3,10 @@
 import React, { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { CanvasMaterialVideo } from "@/components/CanvasMaterialVideo";
-import { useLocalBridgeMediaUrl } from "@/lib/localBridgeMedia";
+import {
+  isLocalBridgeMediaUrl,
+  useLocalBridgeMediaUrl,
+} from "@/lib/localBridgeMedia";
 
 type AnchorRect = Pick<DOMRect, "left" | "top" | "width">;
 
@@ -22,7 +25,9 @@ export function MaterialThumbHoverPreview({
   visible: boolean;
 }) {
   const [mounted, setMounted] = useState(false);
-  const resolvedUrl = useLocalBridgeMediaUrl(url) || url;
+  const bridgeResolvedUrl = useLocalBridgeMediaUrl(url);
+  const resolvedUrl =
+    bridgeResolvedUrl || (isLocalBridgeMediaUrl(url) ? "" : url);
   useEffect(() => setMounted(true), []);
 
   if (!mounted || !visible || !anchorRect || !resolvedUrl) return null;
