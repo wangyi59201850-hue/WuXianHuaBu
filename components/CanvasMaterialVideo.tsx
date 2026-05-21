@@ -2,6 +2,7 @@
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Maximize2, Minimize2, Pause, Play, Volume2, VolumeX } from "lucide-react";
+import { useLocalBridgeMediaUrl } from "@/lib/localBridgeMedia";
 
 function formatTime(sec: number) {
   if (!Number.isFinite(sec) || sec < 0) return "0:00";
@@ -56,6 +57,7 @@ export function CanvasMaterialVideo({
   toolbarExpandExpanded = false,
   onToolbarExpandToggle,
 }: Props) {
+  const resolvedSrc = useLocalBridgeMediaUrl(src) || src;
   const videoRefA = useRef<HTMLVideoElement | null>(null);
   const videoRefB = useRef<HTMLVideoElement | null>(null);
   const trackRef = useRef<HTMLDivElement>(null);
@@ -67,7 +69,7 @@ export function CanvasMaterialVideo({
 
   /** 双缓冲：换 src 时在非可见槽预加载，避免单 video 换源闪黑 */
   const [activeSlot, setActiveSlot] = useState<Slot>(0);
-  const [slotUrls, setSlotUrls] = useState<[string, string]>(() => [src, ""]);
+  const [slotUrls, setSlotUrls] = useState<[string, string]>(() => [resolvedSrc, ""]);
 
   const srcRef = useRef(src);
   const activeSlotRef = useRef(activeSlot);
@@ -78,10 +80,10 @@ export function CanvasMaterialVideo({
   const slotRecoverCountRef = useRef<[number, number]>([0, 0]);
 
   useEffect(() => {
-    srcRef.current = src;
+    srcRef.current = resolvedSrc;
     activeSlotRef.current = activeSlot;
     slotUrlsRef.current = slotUrls;
-  }, [src, activeSlot, slotUrls]);
+  }, [resolvedSrc, activeSlot, slotUrls]);
 
   const getActiveEl = useCallback(() => (activeSlot === 0 ? videoRefA.current : videoRefB.current), [activeSlot]);
   const getSlotEl = useCallback((slot: Slot) => (slot === 0 ? videoRefA.current : videoRefB.current), []);
@@ -130,7 +132,7 @@ export function CanvasMaterialVideo({
   );
 
   useEffect(() => {
-    const t = src.trim();
+    const t = resolvedSrc.trim();
     if (!t) {
       loadGenRef.current += 1;
       pendingRef.current = null;
@@ -174,7 +176,7 @@ export function CanvasMaterialVideo({
       });
     });
     return () => window.cancelAnimationFrame(raf);
-  }, [src, commitActiveSlot]);
+  }, [resolvedSrc, commitActiveSlot]);
 
   const onSlotCanPlay = useCallback(
     (slot: Slot) => {

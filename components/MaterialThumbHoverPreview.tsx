@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { CanvasMaterialVideo } from "@/components/CanvasMaterialVideo";
+import { useLocalBridgeMediaUrl } from "@/lib/localBridgeMedia";
 
 type AnchorRect = Pick<DOMRect, "left" | "top" | "width">;
 
@@ -21,9 +22,10 @@ export function MaterialThumbHoverPreview({
   visible: boolean;
 }) {
   const [mounted, setMounted] = useState(false);
+  const resolvedUrl = useLocalBridgeMediaUrl(url) || url;
   useEffect(() => setMounted(true), []);
 
-  if (!mounted || !visible || !anchorRect || !url) return null;
+  if (!mounted || !visible || !anchorRect || !resolvedUrl) return null;
 
   const cx = anchorRect.left + anchorRect.width / 2;
   const top = anchorRect.top;
@@ -43,7 +45,7 @@ export function MaterialThumbHoverPreview({
       {isVideo ? (
         <div className="h-[min(280px,37vh)] w-[min(348px,55vw)] min-h-[120px]">
           <CanvasMaterialVideo
-            src={url}
+            src={resolvedUrl}
             className="h-full min-h-0 w-full"
             objectFit="contain"
             compact
@@ -53,7 +55,7 @@ export function MaterialThumbHoverPreview({
       ) : (
         // eslint-disable-next-line @next/next/no-img-element
         <img
-          src={url}
+          src={resolvedUrl}
           alt=""
           className="block max-h-[min(280px,37vh)] max-w-[min(348px,55vw)] object-contain"
           draggable={false}

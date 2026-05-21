@@ -11,6 +11,7 @@ import {
 import { extractGeneratedFileName } from "@/lib/generatedUrl";
 import { backupGeneratedMediaToCache } from "@/lib/outputBackupCache";
 import { Check, Layers, Pencil, PlusSquare, Search, Trash2, X } from "lucide-react";
+import { useLocalBridgeMediaUrl } from "@/lib/localBridgeMedia";
 
 const RECENT_CANVAS_LS_KEY = "jimengpro-canvas-recents-v1";
 const RECENT_CANVAS_SORT_LS_KEY = "jimengpro-canvas-sort-v1";
@@ -33,7 +34,8 @@ function RecentCanvasThumb(props: { entry: RecentCanvasEntry; candidates: string
   const { entry, candidates } = props;
   const [failedIndex, setFailedIndex] = useState(0);
 
-  const src = candidates[failedIndex] ?? null;
+  const rawSrc = candidates[failedIndex] ?? null;
+  const src = useLocalBridgeMediaUrl(rawSrc) || rawSrc;
   if (!src) {
     return (
       <div className="flex h-[72%] w-full items-center justify-center bg-zinc-800/80">

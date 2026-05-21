@@ -3,6 +3,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import { X } from "lucide-react";
+import { useLocalBridgeMediaUrl } from "@/lib/localBridgeMedia";
 
 type MediaKind = "image" | "video";
 
@@ -172,6 +173,7 @@ export function GeneratedMediaPreviewModal({
   onClose: () => void;
   children: React.ReactNode;
 }) {
+  const resolvedMediaUrl = useLocalBridgeMediaUrl(mediaUrl) || mediaUrl;
   const [portalReady, setPortalReady] = useState(false);
   const [facts, setFacts] = useState<MediaFacts>({
     width: null,
@@ -193,7 +195,7 @@ export function GeneratedMediaPreviewModal({
       height: null,
       sizeBytes: null,
     });
-    void probeMediaFacts(mediaUrl, mediaKind)
+    void probeMediaFacts(resolvedMediaUrl, mediaKind)
       .then((next) => {
         if (cancelled) return;
         setFacts(next);
@@ -213,7 +215,7 @@ export function GeneratedMediaPreviewModal({
     return () => {
       cancelled = true;
     };
-  }, [mediaKind, mediaUrl]);
+  }, [mediaKind, resolvedMediaUrl]);
 
   const actualRatio = useMemo(
     () => formatAspectRatio(facts.width, facts.height),
