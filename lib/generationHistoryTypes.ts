@@ -1,0 +1,30 @@
+export type GenerationHistoryMediaType = "image" | "video";
+export type GenerationHistoryHealthStatus = "ok" | "backup" | "recoverable" | "missing";
+
+export type GenerationHistoryEntry = {
+  id: string;
+  submitId?: string;
+  createdAt: number;
+  mediaType: GenerationHistoryMediaType;
+  sourceKind?: "generate" | "process";
+  processOperation?: "outpaint" | "upscale" | "retouch" | "multiview" | "cutout";
+  outputUrl: string;
+  fileName: string;
+  hasMeta?: boolean;
+  promptText?: string;
+  modelVersion?: string;
+  ratio?: string;
+  resolutionType?: string;
+  count?: number;
+  durationSeconds?: number;
+  withAudio?: boolean;
+  videoProvider?: "dreamina" | "external_api";
+  referenceMode?: "general" | "headtail";
+  referenceThumbDataUrls?: string[];
+  posterUrl?: string | null;
+  healthStatus?: GenerationHistoryHealthStatus;
+  healthDetail?: string;
+  referenceCount?: number;
+  referencedInCurrentCanvas?: boolean;
+  referenceLabels?: string[];
+};
