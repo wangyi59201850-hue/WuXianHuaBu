@@ -4,6 +4,10 @@ import { MagneticHandleSource } from "./MagneticHandle";
 import { Image as ImageIcon, Loader2, Star, Trash2, Upload, X } from "lucide-react";
 import { JIMENG_CLOSE_MEDIA_LIGHTBOX_EVENT } from "@/lib/uiEvents";
 import { CanvasMaterialVideo } from "@/components/CanvasMaterialVideo";
+import {
+  isLocalBridgeMediaUrl,
+  useLocalBridgeMediaUrl,
+} from "@/lib/localBridgeMedia";
 
 export type LocalImageNodeData = {
   imagePreviewUrl?: string | null;
@@ -32,7 +36,9 @@ export type LocalImageNodeData = {
 };
 
 export function LocalImageNode({ data, selected }: NodeProps<LocalImageNodeData>) {
-  const src = data.imagePreviewUrl ?? null;
+  const rawSrc = data.imagePreviewUrl ?? null;
+  const bridgeSrc = useLocalBridgeMediaUrl(rawSrc);
+  const src = bridgeSrc || (isLocalBridgeMediaUrl(rawSrc) ? null : rawSrc);
   const refIndex = data.refIndex ?? null;
   const onDelete = data.onDelete;
   const onLoadImage = data.onLoadImage;
@@ -45,6 +51,9 @@ export function LocalImageNode({ data, selected }: NodeProps<LocalImageNodeData>
     Boolean(data.imageFile?.type?.startsWith("video/")) || Boolean(data.materialIsVideo);
   const [expandedSrc, setExpandedSrc] = useState<string | null>(null);
   const [magneticReveal, setMagneticReveal] = useState(false);
+  const expandedBridgeSrc = useLocalBridgeMediaUrl(expandedSrc);
+  const displayExpandedSrc =
+    expandedBridgeSrc || (isLocalBridgeMediaUrl(expandedSrc) ? null : expandedSrc);
 
   const [aspect, setAspect] = useState<number | null>(null);
   const frameW = typeof data.tileWidth === "number" && data.tileWidth > 0 ? data.tileWidth : 320;
@@ -321,7 +330,7 @@ export function LocalImageNode({ data, selected }: NodeProps<LocalImageNodeData>
         />
       ) : null}
 
-      {expandedSrc ? (
+      {displayExpandedSrc ? (
         <div
           className="nopan nodrag fixed inset-0 z-[90] flex items-center justify-center bg-zinc-950/90 p-2 sm:p-3"
           onClick={() => setExpandedSrc(null)}
@@ -343,7 +352,7 @@ export function LocalImageNode({ data, selected }: NodeProps<LocalImageNodeData>
                 >
                   <X className="h-5 w-5" strokeWidth={2} />
                 </button>
-                <CanvasMaterialVideo src={expandedSrc} objectFit="contain" surfaceAction="togglePlay" />
+                <CanvasMaterialVideo src={displayExpandedSrc} objectFit="contain" surfaceAction="togglePlay" />
               </div>
             ) : (
               <div className="relative inline-block">
@@ -360,7 +369,7 @@ export function LocalImageNode({ data, selected }: NodeProps<LocalImageNodeData>
                 </button>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src={expandedSrc}
+                  src={displayExpandedSrc}
                   alt=""
                   draggable={false}
                   className="max-h-[calc(100vh-16px)] max-w-[calc(100vw-16px)] object-contain shadow-none outline-none ring-0"

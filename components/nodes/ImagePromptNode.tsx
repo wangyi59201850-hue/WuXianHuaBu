@@ -17,6 +17,10 @@ import {
   type GenerateStreamProgressEvent,
 } from "@/lib/generateStreamProgress";
 import { type PromptNodeData } from "./PromptNode";
+import {
+  isLocalBridgeMediaUrl,
+  useLocalBridgeMediaUrl,
+} from "@/lib/localBridgeMedia";
 
 type ModelRow = {
   value: string;
@@ -83,7 +87,11 @@ export function ImagePromptNode({ id, data, selected }: NodeProps<PromptNodeData
   const [sizeMenuOpen, setSizeMenuOpen] = useState(false);
   const [countMenuOpen, setCountMenuOpen] = useState(false);
 
-  const currentDisplayUrl = resultImageUrls[0] ?? resultImageUrl ?? null;
+  const rawCurrentDisplayUrl = resultImageUrls[0] ?? resultImageUrl ?? null;
+  const bridgeCurrentDisplayUrl = useLocalBridgeMediaUrl(rawCurrentDisplayUrl);
+  const currentDisplayUrl =
+    bridgeCurrentDisplayUrl ||
+    (isLocalBridgeMediaUrl(rawCurrentDisplayUrl) ? null : rawCurrentDisplayUrl);
   const currentModels = useMemo(
     () =>
       imageProvider === "aiwanwu"
