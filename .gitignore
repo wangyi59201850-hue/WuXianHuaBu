@@ -30,6 +30,7 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 .cloud-dev-*.log
+.bridge-*.log
 
 # env files (can opt-in for committing if needed)
 .env*
@@ -38,6 +39,7 @@ yarn-error.log*
 .vercel
 .wrangler
 cloudflare-env.d.ts
+.open-next
 
 # typescript
 *.tsbuildinfo

@@ -5,6 +5,7 @@ import {
   APP_BRAND_LOGO_SRC,
   APP_BRAND_TITLE,
 } from "@/lib/brand";
+import { LocalBridgeClient } from "@/components/LocalBridgeClient";
 
 export const metadata: Metadata = {
   title: APP_BRAND_TITLE,
@@ -23,7 +24,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="zh-CN" className="h-full antialiased">
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        {children}
+        <LocalBridgeClient />
+      </body>
     </html>
   );
 }
